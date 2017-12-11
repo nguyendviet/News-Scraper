@@ -1,0 +1,8 @@
+<a href="/">Home</a> | 
+<a href="/saved">Saved articles</a>
+<button class="scrape">Scrape New Articles</button>
+
+{{#each data}}
+    <p>{{this.title}}</p>
+    <p>{{this.link}}</p>
+{{/each}}
