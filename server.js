@@ -45,7 +45,7 @@ app.get('/scrape', (req, res)=>{
     // Send request to get data
     axios.get('http://www.echojs.com/').then((response)=>{
         var $ = cheerio.load(response.data);
-    
+
         $('article h2').each(function(i, element) {
             var result = {};
         
@@ -55,13 +55,26 @@ app.get('/scrape', (req, res)=>{
             // Create new Article
             db.Article.create(result)
             .then((dbArticle)=>{
-                res.send('Scrape Complete');
+                console.log('Article added to database:\n' + dbArticle);
             })
             .catch((err)=>{
-                // If error, send to client
-                res.json(err);
+                console.log(err);
             });
         });
+
+        res.redirect('/articles');
+    });
+});
+
+app.get('/articles', (req, res)=>{
+    db.Article.find({})
+    .then((dbArticle)=>{
+        var articleObj = {article: dbArticle};
+
+        res.render('index', articleObj);
+    })
+    .catch((err)=>{
+        res.json(err);
     });
 });
 

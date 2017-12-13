@@ -3,7 +3,7 @@ $(()=>{
         $.get('/scrape')
         .done((data)=>{
             alert('Articles sracped!');
-            // $('body').html(data);
+            $('body').html(data);
         });
     });
 });
