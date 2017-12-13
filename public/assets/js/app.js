@@ -2,7 +2,7 @@ $(()=>{
     $('.scrape').on('click', ()=>{
         $.get('/scrape')
         .done((data)=>{
-            alert('Articles sracped!');
+            // alert('Articles scraped!');
             $('body').html(data);
         });
     });

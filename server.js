@@ -48,10 +48,10 @@ app.get('/scrape', (req, res)=>{
 
         $('article h2').each(function(i, element) {
             var result = {};
-        
+
             result.title = $(this).children('a').text();
             result.link = $(this).children('a').attr('href');
-        
+
             // Create new Article
             db.Article.create(result)
             .then((dbArticle)=>{
