@@ -21,9 +21,9 @@ module.exports = (app)=>{
 
             // Use cheerio for shorthand selector $
             var $ = cheerio.load(response.data);
+            var result = {};
 
             $('.lakeside__title').each(function(i, element) {
-                var result = {};
                 var title = $(this).children('a').children('span').text();
                 var link = $(this).children('a').attr('href');
 
@@ -36,28 +36,14 @@ module.exports = (app)=>{
                     console.log(dbArticle);
                 })
                 .catch((err)=>{
-                    console.log(err);
+                    console.log('\nerror while saving to database: ' + err);
                 });
             });
 
-            // // loop through articles
-            // $('article h2').each(function(i, element) {
-            //     var result = {};
-
-            //     result.title = $(this).children('a').text();
-            //     result.link = $(this).children('a').attr('href');
-
-            //     // create new Article
-            //     db.Article.create(result)
-            //     .then((dbArticle)=>{
-            //         console.log('Article added to database:\n' + dbArticle);
-            //     })
-            //     .catch((err)=>{
-            //         console.log(err);
-            //     });
-            // });
-
             res.redirect('/articles');
+        })
+        .catch((error)=>{
+            console.log('\nerror while getting data from url: ' + error);
         });
     });
 
