@@ -1,29 +1,34 @@
 // Dependencies
 const express = require('express');
-const mongojs = require('mongojs');
-const request = require('request');
-const cheerio = require('cheerio');
+const bParser = require('body-parser');
+const logger = require('morgan');
+const mongoose = require('mongoose');
 const eHandle = require('express-handlebars');
+const axios = require('axios');
+const cheerio = require('cheerio');
+const db = require('./models');
+
+var PORT = process.env.PORT || 3000;
 
 // Initialize Express
 const app = express();
 
+// Use morgan logger for logging requests
+app.use(logger('dev'));
+// Use body-parser for handling form submissions
+app.use(bParser.urlencoded({extended: true}));
 // Set static directory
 app.use(express.static('public'));
-
 // Set Handlebars as the default templating engine
 app.engine('handlebars', eHandle({defaultLayout: 'main'}));
 app.set('view engine', 'handlebars');
 
 // Database configuration
-const databaseUrl = 'news_scraper';
-const collections = ['scrapedData'];
-
-// Hook mongojs configuration to the db variable
-var db = mongojs(databaseUrl, collections);
-db.on('error', (err)=>{
-    console.log('Database Error:', err);
-});
+mongoose.Promise = Promise;
+mongoose.connect(
+    'mongodb://localhost/news_scraper', 
+    {userMongoClient: true}
+);
 
 // Main route
 app.get('/', (req, res)=>{
@@ -37,54 +42,30 @@ app.get('/saved', (req, res)=>{
 
 // Scrape data from one site and place it into the mongodb db
 app.get('/scrape', (req, res)=>{
-  // Make a request for the news section of ycombinator
-  request('https://news.ycombinator.com/', (error, response, html)=>{
-    // Load the html body from request into cheerio
-    var $ = cheerio.load(html);
+    // Send request to get data
+    axios.get('http://www.echojs.com/').then((response)=>{
+        var $ = cheerio.load(response.data);
     
-        // For each element with a "title" class
-        $(".title").each((i, element)=>{
-            // Save the text and href of each link enclosed in the current element
-            var title = $(element).children("a").text();
-            var link = $(element).children("a").attr("href");
-
-            // If this found element had both a title and a link
-            if (title && link) {
-                // Insert the data in the scrapedData db
-                db.scrapedData.insert({
-                    title: title,
-                    link: link
-                },
-                (err, inserted)=>{
-                if (err) {
-                    // Log the error if one is encountered during the query
-                    console.log(err);
-                }
-                else {
-                    // Otherwise, log the inserted data
-                    console.log(inserted);
-                }
-                });
-            }
+        $('article h2').each(function(i, element) {
+            var result = {};
+        
+            result.title = $(this).children('a').text();
+            result.link = $(this).children('a').attr('href');
+        
+            // Create new Article
+            db.Article.create(result)
+            .then((dbArticle)=>{
+                res.send('Scrape Complete');
+            })
+            .catch((err)=>{
+                // If error, send to client
+                res.json(err);
+            });
         });
-    });
-
-    // Find all results from the scrapedData collection in the db
-    db.scrapedData.find({}, (err, found)=>{
-        // Throw any errors to the console
-        if (err) {
-            console.log(err);
-        }
-        // If there are no errors, send the data to the browser as json
-        else {
-            var obj = {data: found};
-            res.render('index', obj);
-        }
     });
 });
 
-
-// Listen on port 3000
-app.listen(3000, ()=>{
-    console.log('App running on port 3000!');
+// Start server
+app.listen(PORT, ()=>{
+    console.log('App running on port ' + PORT);
 });
