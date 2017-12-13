@@ -17,26 +17,45 @@ module.exports = (app)=>{
     // scrape data from one site and place it into the mongodb db
     app.get('/scrape', (req, res)=>{
         // get body of url
-        axios.get('http://www.echojs.com/').then((response)=>{
+        axios.get('http://www.bbc.com/sport/football').then((response)=>{
+
             // Use cheerio for shorthand selector $
             var $ = cheerio.load(response.data);
 
-            // loop through articles
-            $('article h2').each(function(i, element) {
+            $('.lakeside__title').each(function(i, element) {
                 var result = {};
+                var title = $(this).children('a').children('span').text();
+                var link = $(this).children('a').attr('href');
 
-                result.title = $(this).children('a').text();
-                result.link = $(this).children('a').attr('href');
+                result.title = title;
+                result.link = link;
 
                 // create new Article
                 db.Article.create(result)
                 .then((dbArticle)=>{
-                    console.log('Article added to database:\n' + dbArticle);
+                    console.log(dbArticle);
                 })
                 .catch((err)=>{
                     console.log(err);
                 });
             });
+
+            // // loop through articles
+            // $('article h2').each(function(i, element) {
+            //     var result = {};
+
+            //     result.title = $(this).children('a').text();
+            //     result.link = $(this).children('a').attr('href');
+
+            //     // create new Article
+            //     db.Article.create(result)
+            //     .then((dbArticle)=>{
+            //         console.log('Article added to database:\n' + dbArticle);
+            //     })
+            //     .catch((err)=>{
+            //         console.log(err);
+            //     });
+            // });
 
             res.redirect('/articles');
         });
