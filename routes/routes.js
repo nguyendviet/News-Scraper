@@ -23,12 +23,14 @@ module.exports = (app)=>{
             var $ = cheerio.load(response.data);
             var result = {};
 
-            $('.lakeside__title').each(function(i, element) {
-                var title = $(this).children('a').children('span').text();
-                var link = $(this).children('a').attr('href');
+            $('.lakeside__content').each(function(i, element) {
+                var title = $(this).children('h3').children('a').children('span').text();
+                var link = $(this).children('h3').children('a').attr('href');
+                var summary = $(this).children('p').text();
 
                 result.title = title;
                 result.link = link;
+                result.summary = summary;
 
                 // create new Article
                 db.Article.create(result)
@@ -40,6 +42,7 @@ module.exports = (app)=>{
                 });
             });
 
+            // res.json(response.data);
             res.redirect('/articles');
         })
         .catch((error)=>{
