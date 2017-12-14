@@ -37,12 +37,12 @@ module.exports = (app)=>{
         });
     });
 
-    // scrape data from one site and place it into the mongodb db
+    // scrape data then save to mongodb
     app.get('/scrape', (req, res)=>{
         // get body of url
         axios.get('http://www.bbc.com/sport/football').then((response)=>{
 
-            // Use cheerio for shorthand selector $
+            // use cheerio for shorthand selector $
             const $ = cheerio.load(response.data);
             
             $('.lakeside__content').each(function(i, element) {
@@ -59,13 +59,11 @@ module.exports = (app)=>{
                 db.Article.create(result)
                 .then((dbArticle)=>{
                     console.log(dbArticle);
-                    //if error count ++ 
                 })
                 .catch((err)=>{
                     console.log('\nerror while saving to database: ' + err);
                 });
             });
-            // res.json(response.data);
             res.redirect('/articles');
         })
         .catch((error)=>{
@@ -109,6 +107,46 @@ module.exports = (app)=>{
             res.json(dbArticle);
         })
         .catch((err)=>{
+            res.json(err);
+        });
+    });
+
+    // get current notes
+    app.get('/article/notes/:id', (req,res)=>{
+        let id = req.params.id;
+
+        // cannot get notes associated with article
+        db.Article.findById(id)
+        .populate('note')
+        .then((dbArticle)=>{
+            console.log('\n\n====================get all notes:\n' + dbArticle);
+            res.json(dbArticle);
+        })
+        .catch((err)=>{
+            res.json(err);
+        });
+    });
+
+    // save new note
+    app.post('/note/:id', (req,res)=>{
+        let id = req.params.id;
+
+        db.Note.create(req.body)
+        .then(function(dbNote) {
+            return db.Article.findOneAndUpdate({
+                _id: id
+            }, {
+                $push: {
+                    note: dbNote._id
+                }
+            }, {
+                new: true, upsert: true
+            });
+        })
+        .then(function(dbArticle) {
+            res.json(dbArticle);
+        })
+        .catch(function(err) {
             res.json(err);
         });
     });
