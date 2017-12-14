@@ -37,34 +37,44 @@ $(()=>{
 
     const viewNotes = function() {
         let id = $(this).data('id');
+        console.log(`view notes from this article id ${id}`);
 
         // send request to get article's notes if exist
         $.ajax({
-            url: `/article/notes/${id}`,
+            url: `/notes/article/${id}`,
             method: 'GET'
         })
         .then((data)=>{
-            console.log(`this should show all notes ${JSON.stringify(data)}`);
+            // console.log(`this should show all notes ${JSON.stringify(data)}`);
             $('.modal').modal('show');
+            $('.btn-save-note').attr('data-id', id);
             // clear textarea
             $('.note-content').val('');
-            $('.note-content').attr('data-id', id);
         });
     };
 
     const saveNote = function() {
-        let id = $('.note-content').data('id');
-        let content = $('.note-content').val();
+        let id = $(this).data('id');
+        console.log(`this data id id ${$(this).data('id')}`);
+        console.log(`save note to this article id ${id}`); // DOM doesn't get the right id event data-id changes
+        let content = $('.note-content').val().trim();
 
-        $.ajax({
-            url: `/note/${id}`,
-            method: 'POST',
-            data: {body: content}
-        })
-        .then((data)=>{
-            console.log(data);
-        });
-    }
+        if (content) {
+            $.ajax({
+                url: `/note/${id}`,
+                method: 'POST',
+                data: {body: content}
+            })
+            .then((data)=>{
+                // console.log(`response from saving new note: ${JSON.stringify(data)}`);
+                $('.note-content').val('');
+            });
+        }
+        else {
+            $('.note-content').val('');
+            return;
+        }
+    };
 
     // hide scrape button if on page 'saved'
     if (window.location.href.includes('saved')) {

@@ -112,10 +112,10 @@ module.exports = (app)=>{
     });
 
     // get current notes
-    app.get('/article/notes/:id', (req,res)=>{
-        let id = req.params.id;
+    app.get('/notes/article/:id', (req,res)=>{
+        var id = req.params.id;
 
-        // cannot get notes associated with article
+        // cannot get notes associated with article, only the very first one
         db.Article.findById(id)
         .populate('note')
         .then((dbArticle)=>{
@@ -132,7 +132,7 @@ module.exports = (app)=>{
         let id = req.params.id;
 
         db.Note.create(req.body)
-        .then(function(dbNote) {
+        .then((dbNote)=>{
             return db.Article.findOneAndUpdate({
                 _id: id
             }, {
@@ -140,13 +140,13 @@ module.exports = (app)=>{
                     note: dbNote._id
                 }
             }, {
-                new: true, upsert: true
+                new: true
             });
         })
-        .then(function(dbArticle) {
+        .then((dbArticle)=>{
             res.json(dbArticle);
         })
-        .catch(function(err) {
+        .catch((err)=>{
             res.json(err);
         });
     });
