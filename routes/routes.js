@@ -119,7 +119,6 @@ module.exports = (app)=>{
         db.Article.findById(id)
         .populate('note')
         .then((dbArticle)=>{
-            console.log('\n\n====================get all notes:\n' + dbArticle);
             res.json(dbArticle);
         })
         .catch((err)=>{

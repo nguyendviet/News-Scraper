@@ -10,14 +10,12 @@ $(()=>{
 
     const saveArticle = function() {
         let id = $(this).data('id');
-        // $(this).addClass('disabled');
 
         $.ajax({
             url: `/article/${id}`,
             method: 'PUT'
         })
         .then((data)=>{
-            console.log(data);
             location.reload();
         });
     };
@@ -30,14 +28,12 @@ $(()=>{
             method: 'PUT'
         })
         .then((data)=>{
-            console.log(data);
             location.reload();
         });
     };
 
     const viewNotes = function() {
         let id = $(this).data('id');
-        console.log(`view notes from this article id ${id}`);
 
         // send request to get article's notes if exist
         $.ajax({
@@ -45,18 +41,30 @@ $(()=>{
             method: 'GET'
         })
         .then((data)=>{
-            // console.log(`this should show all notes ${JSON.stringify(data)}`);
+            console.log(`get data from this article: ${data.title}`);
+            console.log(`with this id: ${data._id}`);
+            $('.modal-content').html(`
+                <div class="modal-header">
+                    <h5 class="modal-title"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <textarea name="note" class="note-content"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" data-id="${data._id}" class="btn btn-primary btn-save-note">Save Note</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>`
+            );
             $('.modal').modal('show');
-            $('.btn-save-note').attr('data-id', id);
-            // clear textarea
-            $('.note-content').val('');
         });
     };
 
     const saveNote = function() {
         let id = $(this).data('id');
-        console.log(`this data id id ${$(this).data('id')}`);
-        console.log(`save note to this article id ${id}`); // DOM doesn't get the right id event data-id changes
+        console.log(`button save note id when clicked: ${id}`);
         let content = $('.note-content').val().trim();
 
         if (content) {
@@ -90,5 +98,5 @@ $(()=>{
     $('.btn-save').on('click', saveArticle);
     $('.btn-remove').on('click', removeArticle);
     $('.btn-view-notes').on('click', viewNotes);
-    $('.btn-save-note').on('click', saveNote);
+    $(document).on('click', '.btn-save-note', saveNote);
 });
