@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 // Create schema
-var ArticleSchema = new Schema({
+const ArticleSchema = new Schema({
     title: {
         type: String,
         required: true,
@@ -18,6 +18,10 @@ var ArticleSchema = new Schema({
         required: true,
         unique: true
     },
+    saved: {
+        type: Boolean,
+        default: false
+    },
     note: {
         type: Schema.Types.ObjectId,
         ref: 'Note'
@@ -25,6 +29,6 @@ var ArticleSchema = new Schema({
 });
 
 // Create model from schema
-var Article = mongoose.model('Article', ArticleSchema);
+const Article = mongoose.model('Article', ArticleSchema);
 
 module.exports = Article;
