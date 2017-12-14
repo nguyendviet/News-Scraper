@@ -8,7 +8,11 @@
                     <a href="http://www.bbc.com{{this.link}}" target="_blank" class="card-link">Read more</a>
                 </div>
                 <div class="col-md-4 align-self-end text-right">
-                    <button class="btn btn-success m-2 btn-save" data-id="{{this._id}}">Save Article</button>
+                    {{#if saved}}
+                        <button class="btn btn-secondary m-2 disabled">Article Saved</button>
+                    {{else}}
+                        <button class="btn btn-success m-2 btn-save" data-id="{{this._id}}">Save Article</button>
+                    {{/if}}
                 </div>
             </div>
         </div>

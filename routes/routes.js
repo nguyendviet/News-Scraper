@@ -7,7 +7,7 @@ module.exports = (app)=>{
     // main page
     app.get('/', (req, res)=>{
         // look for existing articles in database
-        db.Article.find({saved: false})
+        db.Article.find({})
         .then((dbArticle)=>{
             if (dbArticle.length == 0) {
                 // if no articles found, render index
@@ -75,7 +75,7 @@ module.exports = (app)=>{
 
     // show articles after scraping
     app.get('/articles', (req, res)=>{
-        db.Article.find({saved: false})
+        db.Article.find({})
         .then((dbArticle)=>{
             let articleObj = {article: dbArticle};
 

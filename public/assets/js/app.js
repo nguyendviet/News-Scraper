@@ -10,7 +10,7 @@ $(()=>{
 
     const saveArticle = function() {
         let id = $(this).data('id');
-        $(this).addClass('disabled');
+        // $(this).addClass('disabled');
 
         $.ajax({
             url: '/article/' + id,
