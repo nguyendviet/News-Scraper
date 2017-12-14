@@ -112,17 +112,19 @@ module.exports = (app)=>{
     });
 
     // get current notes
-    app.get('/notes/article/:id', (req,res)=>{
+    app.get('/article/:id', (req,res)=>{
         var id = req.params.id;
 
         // cannot get notes associated with article, only the very first one
         db.Article.findById(id)
         .populate('note')
-        .then((dbArticle)=>{
-            res.json(dbArticle);
+        .then(function(dbArticle) {
+          // If we were able to successfully find an Article with the given id, send it back to the client
+          res.json(dbArticle);
         })
-        .catch((err)=>{
-            res.json(err);
+        .catch(function(err) {
+          // If an error occurred, send it to the client
+          res.json(err);
         });
     });
 
@@ -139,7 +141,7 @@ module.exports = (app)=>{
                     note: dbNote._id
                 }
             }, {
-                new: true
+                new: true, safe: true, upsert: true
             });
         })
         .then((dbArticle)=>{

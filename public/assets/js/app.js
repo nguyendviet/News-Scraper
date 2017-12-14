@@ -37,12 +37,13 @@ $(()=>{
 
         // send request to get article's notes if exist
         $.ajax({
-            url: `/notes/article/${id}`,
+            url: `/article/${id}`,
             method: 'GET'
         })
         .then((data)=>{
-            console.log(`get data from this article: ${data.title}`);
-            console.log(`with this id: ${data._id}`);
+            console.log(`get data from this article: ${JSON.stringify(data)}`);
+
+            // create modal with article id
             $('.modal-content').html(`
                 <div class="modal-header">
                     <h5 class="modal-title"></h5>
@@ -98,5 +99,6 @@ $(()=>{
     $('.btn-save').on('click', saveArticle);
     $('.btn-remove').on('click', removeArticle);
     $('.btn-view-notes').on('click', viewNotes);
+    // bind save note button to screen
     $(document).on('click', '.btn-save-note', saveNote);
 });
