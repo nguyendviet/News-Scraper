@@ -22,7 +22,7 @@ app.engine('handlebars', eHandle({defaultLayout: 'main'}));
 app.set('view engine', 'handlebars');
 
 // database configuration
-mongoose.Promise = Promise;
+// mongoose.Promise = Promise;
 // mongoose.connect(MONGODB_URI, {userMongoClient: true});
 mongoose.connect('mongodb://heroku_1wp6rsx1:300oce6pqg6l1q0cur0c7sdgcj@ds141786.mlab.com:41786/heroku_1wp6rsx1');
 let db = mongoose.connection;
