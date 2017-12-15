@@ -43,7 +43,7 @@ module.exports = (app)=>{
         axios.get('http://www.bbc.com/sport/football').then((response)=>{
 
             // use cheerio for shorthand selector $
-            const $ = cheerio.load(response.data);
+            let $ = cheerio.load(response.data);
             
             $('.lakeside__content').each(function(i, element) {
                 let result = {};
@@ -113,16 +113,16 @@ module.exports = (app)=>{
 
     // get current notes
     app.get('/article/:id', (req,res)=>{
-        var id = req.params.id;
+        let id = req.params.id;
 
         // cannot get notes associated with article, only the very first one
         db.Article.findById(id)
         .populate('note')
-        .then(function(dbArticle) {
-          res.json(dbArticle);
+        .then((dbArticle)=>{
+            res.json(dbArticle);
         })
-        .catch(function(err) {
-          res.json(err);
+        .catch((err)=>{
+            res.json(err);
         });
     });
 
@@ -139,7 +139,7 @@ module.exports = (app)=>{
                     note: dbNote._id
                 }
             }, {
-                new: true, safe: true, upsert: true
+                new: true, upsert: true
             });
         })
         .then((dbArticle)=>{

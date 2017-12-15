@@ -5,7 +5,7 @@ const logger = require('morgan');
 const mongoose = require('mongoose');
 const eHandle = require('express-handlebars');
 
-var PORT = process.env.PORT || 3000;
+let PORT = process.env.PORT || 3000;
 
 // initialize express
 const app = express();

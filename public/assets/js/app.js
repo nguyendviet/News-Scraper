@@ -75,7 +75,7 @@ $(()=>{
                 data: {body: content}
             })
             .then((data)=>{
-                // console.log(`response from saving new note: ${JSON.stringify(data)}`);
+                console.log(`response from saving new note: ${JSON.stringify(data)}`);
                 $('.note-content').val('');
             });
         }

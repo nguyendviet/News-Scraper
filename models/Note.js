@@ -3,7 +3,9 @@ const Schema = mongoose.Schema;
 
 // Create schema
 const NoteSchema = new Schema({
-    body: String
+    body: {
+        type: String
+    }
 });
 
 // Create model from schema
