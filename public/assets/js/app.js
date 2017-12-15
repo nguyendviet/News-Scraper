@@ -3,7 +3,6 @@ $(()=>{
     const scrapeArticles = ()=>{
         $.get('/scrape')
         .then((data)=>{
-            // alert('Articles scraped!'); // how to get number of new scraped articles?
             $('body').html(data);
         });
     };
@@ -41,7 +40,6 @@ $(()=>{
             method: 'GET'
         })
         .then((data)=>{
-            
             // create modal with article id
             $('.modal-content').html(`
                 <div class="modal-header">
@@ -135,7 +133,7 @@ $(()=>{
     $('.btn-save').on('click', saveArticle);
     $('.btn-remove').on('click', removeArticle);
     $('.btn-view-notes').on('click', viewNotes);
-    // bind save note button to screen
+    // handle click events for elements created dynamically
     $(document).on('click', '.btn-save-note', saveNote);
     $(document).on('click', '.material-icons', deleteNote);
 });

@@ -40,8 +40,8 @@ module.exports = (app)=>{
     // scrape data then save to mongodb
     app.get('/scrape', (req, res)=>{
         // get body of url
-        axios.get('http://www.bbc.com/sport/football').then((response)=>{
-
+        axios.get('http://www.bbc.com/sport/football')
+        .then((response)=>{
             // use cheerio for shorthand selector $
             let $ = cheerio.load(response.data);
             
@@ -64,6 +64,7 @@ module.exports = (app)=>{
                     console.log(`nerror while saving to database: ${err}`);
                 });
             });
+
             res.redirect('/articles');
         })
         .catch((error)=>{
