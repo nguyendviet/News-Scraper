@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 const eHandle = require('express-handlebars');
 
 let PORT = process.env.PORT || 3000;
+// let MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost/news_scraper';
 
 // initialize express
 const app = express();
@@ -22,10 +23,18 @@ app.set('view engine', 'handlebars');
 
 // database configuration
 mongoose.Promise = Promise;
-mongoose.connect(
-    'mongodb://localhost/news_scraper', 
-    {userMongoClient: true}
-);
+// mongoose.connect(MONGODB_URI, {userMongoClient: true});
+mongoose.connect('mongodb://heroku_1wp6rsx1:300oce6pqg6l1q0cur0c7sdgcj@ds141786.mlab.com:41786/heroku_1wp6rsx1');
+let db = mongoose.connection;
+
+// check connection status
+db.on('error', (error)=>{
+  console.log(`Connection error ${error}`);
+});
+
+db.once('open', ()=>{
+  console.log(`Connected!`);
+});
 
 require('./routes/routes.js')(app);
 
