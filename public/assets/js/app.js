@@ -33,25 +33,25 @@ $(()=>{
     };
 
     const viewNotes = function() {
-        let id = $(this).data('id');
+        let articleId = $(this).data('id');
 
         // send request to get article's notes if exist
         $.ajax({
-            url: `/article/${id}`,
+            url: `/article/${articleId}`,
             method: 'GET'
         })
         .then((data)=>{
-            console.log(`get data from this article: ${JSON.stringify(data)}`);
-
+            
             // create modal with article id
             $('.modal-content').html(`
                 <div class="modal-header">
-                    <h5 class="modal-title"></h5>
+                    <h5 class="modal-title">${data.title}</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
+                    <ul class="list-group"></ul>
                     <textarea name="note" class="note-content"></textarea>
                 </div>
                 <div class="modal-footer">
@@ -59,13 +59,34 @@ $(()=>{
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </div>`
             );
+
+            let totalNotes = data.note.length;
+
+            // if there is no note
+            if (totalNotes == 0) {
+                let message = `<small class="text-muted">This article doesn't have any note yet.</small>`;
+                $('.modal-body').prepend(message);
+            }
+            // if there is/are note(s)
+            else {
+                let notes = data.note;
+                // loop through notes and append to modal
+                notes.forEach(note =>{
+                    $('.list-group').append(`
+                        <li class="list-group-item justify-content-between">
+                            ${note.body}
+                            <span><i class="material-icons" data-id="${note._id}">delete_forever</i></span>
+                        </li>
+                    `);
+                });
+            }
+            
             $('.modal').modal('show');
         });
     };
 
     const saveNote = function() {
         let id = $(this).data('id');
-        console.log(`button save note id when clicked: ${id}`);
         let content = $('.note-content').val().trim();
 
         if (content) {
@@ -75,14 +96,29 @@ $(()=>{
                 data: {body: content}
             })
             .then((data)=>{
-                console.log(`response from saving new note: ${JSON.stringify(data)}`);
+                // clear textarea
                 $('.note-content').val('');
+                // hide modal
+                $('.modal').modal('hide');
             });
         }
         else {
             $('.note-content').val('');
             return;
         }
+    };
+
+    const deleteNote = function() {
+        let id = $(this).data('id');
+
+        $.ajax({
+            url: `/note/${id}`,
+            method: 'DELETE'
+        })
+        .then((data)=>{
+            // hide modal
+            $('.modal').modal('hide');
+        });
     };
 
     // hide scrape button if on page 'saved'
@@ -101,4 +137,5 @@ $(()=>{
     $('.btn-view-notes').on('click', viewNotes);
     // bind save note button to screen
     $(document).on('click', '.btn-save-note', saveNote);
+    $(document).on('click', '.material-icons', deleteNote);
 });

@@ -58,16 +58,16 @@ module.exports = (app)=>{
                 // create new Article
                 db.Article.create(result)
                 .then((dbArticle)=>{
-                    console.log(dbArticle);
+                    console.log(`article scraped: ${dbArticle}`);
                 })
                 .catch((err)=>{
-                    console.log('\nerror while saving to database: ' + err);
+                    console.log(`nerror while saving to database: ${err}`);
                 });
             });
             res.redirect('/articles');
         })
         .catch((error)=>{
-            console.log('\nerror while getting data from url: ' + error);
+            console.log(`error while getting data from url: ${error}`);
         });
     });
 
@@ -127,7 +127,7 @@ module.exports = (app)=>{
     });
 
     // save new note
-    app.post('/note/:id', (req,res)=>{
+    app.post('/note/:id', (req, res)=>{
         let id = req.params.id;
 
         db.Note.create(req.body)
@@ -144,6 +144,19 @@ module.exports = (app)=>{
         })
         .then((dbArticle)=>{
             res.json(dbArticle);
+        })
+        .catch((err)=>{
+            res.json(err);
+        });
+    });
+
+    // delete note
+    app.delete('/note/:id', (req, res)=>{
+        let id = req.params.id;
+        
+        db.Note.remove({_id: id})
+        .then((dbNote)=>{
+            res.json({message: 'note removed!'});
         })
         .catch((err)=>{
             res.json(err);

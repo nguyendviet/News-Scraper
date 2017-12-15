@@ -17,3 +17,7 @@
     overflow-y: scroll;
     resize: none;
 }
+
+.material-icons {
+    color: red;
+}
