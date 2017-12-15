@@ -12,5 +12,5 @@ A full stack app that scrapes articles from BBC Football then users can write no
 
 ## Technologies
 * MongoDB, Express, NodeJS.
-* npm: handlebars, body-parser.
+* npm: axios, cheerio, handlebars, body-parser.
 * jQuery, Bootstrap 4.
