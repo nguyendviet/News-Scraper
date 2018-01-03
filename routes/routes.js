@@ -54,11 +54,11 @@ module.exports = (app)=>{
                 result.title = title;
                 result.link = link;
                 result.summary = summary;
-
+               
                 // create new Article
                 db.Article.create(result)
                 .then((dbArticle)=>{
-                    console.log(`article scraped: ${dbArticle}`);
+                    console.log(`\narticle scraped: ${dbArticle}`);
                 })
                 .catch((err)=>{
                     console.log(`\nerror while saving to database: ${err}`);
