@@ -61,7 +61,7 @@ module.exports = (app)=>{
                     console.log(`article scraped: ${dbArticle}`);
                 })
                 .catch((err)=>{
-                    console.log(`error while saving to database: ${err}`);
+                    console.log(`\nerror while saving to database: ${err}`);
                 });
             });
 
@@ -74,7 +74,7 @@ module.exports = (app)=>{
 
     // show articles after scraping
     app.get('/articles', (req, res)=>{
-        db.Article.find({})
+        db.Article.find({}).sort({timestamp: 1})
         .then((dbArticle)=>{
             let articleObj = {article: dbArticle};
 

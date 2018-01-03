@@ -18,6 +18,10 @@ const ArticleSchema = new Schema({
         required: true,
         unique: true
     },
+    timestamp: {
+        type: Date, 
+        default: Date.now
+    },
     saved: {
         type: Boolean,
         default: false
