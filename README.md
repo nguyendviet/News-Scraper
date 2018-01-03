@@ -1,7 +1,7 @@
 # News-Scraper
 
 ## Overview
-George Washington University Project. Mongo Scraper - BBC Football Edition.
+Mongo Scraper - BBC Football Edition.
 
 A full stack app that scrapes articles from BBC Football then users can write notes for each saved article.
 
